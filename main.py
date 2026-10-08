@@ -127,7 +127,7 @@ class Memo:
         if first.has_same_texture(second):
             self.score += 1
             first.matched = second.matched = True
-            if self.score == 8:
+            if self.score == self.max_score:
                 self.game_over()
                 self.flipped_tiles.clear()
                 self.end_time = self.clock.get_time()
