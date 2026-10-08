@@ -32,7 +32,7 @@ class Memo:
         self.clock = pygame.time.Clock()
 
         self.next_reset_time = 0
-        self.start_time = self.clock.get_time()
+        self.start_time = pygame.time.get_ticks()
         self.end_time = 0
 
         self.textures: list[str] = self._get_textures("assets")
@@ -130,7 +130,7 @@ class Memo:
             if self.score == self.max_score:
                 self.game_over()
                 self.flipped_tiles.clear()
-                self.end_time = self.clock.get_time()
+                self.end_time = pygame.time.get_ticks()
                 return
 
         self.next_reset_time = pygame.time.get_ticks() + 500
@@ -159,15 +159,22 @@ class Memo:
             button.draw(self.screen)
 
     def draw_score(self):
-        message = f"Wynik: {self.score}"
+        elapsed = (pygame.time.get_ticks() - self.start_time) // 1000
+
+        score_message = f"Wynik: {self.score} / {self.max_score}"
+        time_message = f"Czas: {elapsed}"
+
         if self.game_state == GameState.GAME_OVER:
             play_time = self.end_time - self.start_time // 1000
-            message = f"KONIEC. Czas gry: {play_time}s"
+            score_message = f"KONIEC. Czas gry: {play_time}s"
 
-        render_text = self.font.render(message,
-                                       True,
-                                       Color.WHITE.value)
-        self.screen.blit(render_text, (10, 20))
+        score_render_text = self.font.render(score_message,
+                                             True,
+                                             Color.WHITE.value)
+        time_render_text = self.font.render(time_message, True, Color.WHITE.value
+                                            )
+        self.screen.blit(score_render_text, (40, 20))
+        self.screen.blit(time_render_text, (self.SCREEN_WIDTH - 150, 20))
 
 
 if __name__ == "__main__":
